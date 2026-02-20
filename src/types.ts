@@ -3,7 +3,7 @@
  *
  * Includes:
  * - Loki/Prometheus/Tempo backend result types
- * - Fingerprint record types (matching @tinyland-inc/tinyland-otel TempoFingerprintRecord)
+ * - Fingerprint record types (matching @tummycrypt/tinyland-otel TempoFingerprintRecord)
  * - Threat correlation types (VPN switching, IP rotation, impossible travel)
  * - Security data types (audit logs, session stats, metrics, alerts)
  *
@@ -111,7 +111,7 @@ export interface TempoTrace {
  * Fingerprint record extracted from Tempo spans.
  *
  * This is a local type definition that matches the shape of
- * `TempoFingerprintRecord` from `@tinyland-inc/tinyland-otel`.
+ * `TempoFingerprintRecord` from `@tummycrypt/tinyland-otel`.
  * Used to decouple this package from the otel package.
  */
 export interface FingerprintRecord {
@@ -182,7 +182,7 @@ export interface FingerprintRecord {
 /**
  * Interface for querying fingerprint records from Tempo.
  *
- * This abstracts the `TempoQueryService` from `@tinyland-inc/tinyland-otel`
+ * This abstracts the `TempoQueryService` from `@tummycrypt/tinyland-otel`
  * so this package does not depend on it directly.
  */
 export interface FingerprintQueryBackend {

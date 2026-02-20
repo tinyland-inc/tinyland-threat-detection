@@ -1,5 +1,5 @@
 /**
- * Vitest Configuration for @tinyland-inc/tinyland-threat-detection
+ * Vitest Configuration for @tummycrypt/tinyland-threat-detection
  *
  * Works in three modes:
  *   1. Standalone:  cd packages/tinyland-threat-detection && pnpm test

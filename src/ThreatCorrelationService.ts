@@ -44,7 +44,7 @@ import type {
  *
  * **Example Usage**:
  * ```typescript
- * import { ThreatCorrelationService, configureThreatDetection } from '@tinyland-inc/tinyland-threat-detection';
+ * import { ThreatCorrelationService, configureThreatDetection } from '@tummycrypt/tinyland-threat-detection';
  *
  * // Configure backends
  * configureThreatDetection({ logger: myLogger });

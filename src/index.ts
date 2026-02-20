@@ -1,5 +1,5 @@
 /**
- * @tinyland-inc/tinyland-threat-detection
+ * @tummycrypt/tinyland-threat-detection
  *
  * Threat correlation, security data querying, VPN switching detection,
  * IP rotation analysis, and impossible travel detection.
@@ -13,7 +13,7 @@
  *   configureThreatDetection,
  *   ThreatCorrelationService,
  *   SecurityDataService,
- * } from '@tinyland-inc/tinyland-threat-detection';
+ * } from '@tummycrypt/tinyland-threat-detection';
  *
  * // Configure once at startup
  * configureThreatDetection({
@@ -29,7 +29,7 @@
  * const logs = await securityService.getAuditLogs('24h');
  * ```
  *
- * @module @tinyland-inc/tinyland-threat-detection
+ * @module @tummycrypt/tinyland-threat-detection
  */
 
 // Configuration

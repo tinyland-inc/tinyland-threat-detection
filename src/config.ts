@@ -93,12 +93,12 @@ export interface PrometheusBackend {
  * Backend for querying fingerprint records (abstracts Tempo).
  *
  * This replaces the direct dependency on `TempoQueryService` from
- * `@tinyland-inc/tinyland-otel`. Implementations should wrap the
+ * `@tummycrypt/tinyland-otel`. Implementations should wrap the
  * Tempo search API and extract fingerprint records from spans.
  *
  * @example
  * ```typescript
- * import { TempoQueryService } from '@tinyland-inc/tinyland-otel';
+ * import { TempoQueryService } from '@tummycrypt/tinyland-otel';
  *
  * const tempoService = new TempoQueryService();
  * const fingerprintBackend: FingerprintQueryBackend = {
@@ -143,7 +143,7 @@ export interface ObservabilityConfig {
  *
  * @example
  * ```typescript
- * import { configureThreatDetection } from '@tinyland-inc/tinyland-threat-detection';
+ * import { configureThreatDetection } from '@tummycrypt/tinyland-threat-detection';
  *
  * configureThreatDetection({
  *   logger: myStructuredLogger,

@@ -38,7 +38,7 @@ import type {
  *
  * @example
  * ```typescript
- * import { SecurityDataService } from '@tinyland-inc/tinyland-threat-detection';
+ * import { SecurityDataService } from '@tummycrypt/tinyland-threat-detection';
  *
  * const service = new SecurityDataService(lokiBackend, prometheusBackend);
  *

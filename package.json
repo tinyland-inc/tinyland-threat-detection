@@ -1,5 +1,5 @@
 {
-  "name": "@tinyland-inc/tinyland-threat-detection",
+  "name": "@tummycrypt/tinyland-threat-detection",
   "version": "0.1.0",
   "description": "Threat correlation, security data querying, VPN switching detection, IP rotation analysis, and impossible travel detection",
   "type": "module",
@@ -53,5 +53,9 @@
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   }
 }
