@@ -1,6 +1,6 @@
 {
   "name": "@tummycrypt/tinyland-threat-detection",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Threat correlation, security data querying, VPN switching detection, IP rotation analysis, and impossible travel detection",
   "type": "module",
   "license": "Zlib AND LicenseRef-Tinyland-Proprietary",
