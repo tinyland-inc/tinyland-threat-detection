@@ -1,13 +1,13 @@
-/**
- * Vitest Configuration for @tummycrypt/tinyland-threat-detection
- *
- * Works in three modes:
- *   1. Standalone:  cd packages/tinyland-threat-detection && pnpm test
- *   2. Workspace:   vitest run --project=tinyland-threat-detection (from root)
- *   3. Bazel:       bazel test //packages/tinyland-threat-detection:test
- *
- * Security package: 80% coverage thresholds
- */
+
+
+
+
+
+
+
+
+
+
 
 import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
