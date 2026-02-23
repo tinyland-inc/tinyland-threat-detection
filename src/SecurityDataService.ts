@@ -1,20 +1,20 @@
-/**
- * Security Data Service
- *
- * Fetches security data from Loki and Prometheus backends.
- * Replaces direct HTTP calls with injected backend interfaces.
- *
- * **Key Capabilities**:
- * - Audit log queries (Loki)
- * - Failed/successful login counts (Loki)
- * - Session statistics (Prometheus)
- * - Critical event retrieval (Loki)
- * - Security metrics aggregation
- * - Fingerprint alert retrieval with enrichment data
- * - GeoIP anomaly detection
- *
- * @module SecurityDataService
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import { getLogger } from './config.js';
 import type { LokiBackend, PrometheusBackend } from './config.js';
@@ -26,29 +26,29 @@ import type {
   GeoIPAnomaly,
 } from './types.js';
 
-// ============================================================================
-// Service Implementation
-// ============================================================================
 
-/**
- * Service for fetching security data from Loki and Prometheus.
- *
- * Uses injected backend interfaces instead of direct HTTP calls,
- * allowing this package to work with any observability stack.
- *
- * @example
- * ```typescript
- * import { SecurityDataService } from '@tummycrypt/tinyland-threat-detection';
- *
- * const service = new SecurityDataService(lokiBackend, prometheusBackend);
- *
- * // Fetch audit logs
- * const logs = await service.getAuditLogs('24h', 100);
- *
- * // Get security metrics
- * const metrics = await service.getSecurityMetrics();
- * ```
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export class SecurityDataService {
   private loki: LokiBackend;
   private prometheus: PrometheusBackend;
@@ -60,20 +60,20 @@ export class SecurityDataService {
     logger.info('SecurityDataService initialized');
   }
 
-  /**
-   * Query Loki for audit logs
-   *
-   * @param timeRange - How far back to search (e.g., '24h', '7d')
-   * @param limit - Maximum number of logs to return (default: 100)
-   * @returns Array of AuditLog entries sorted by timestamp descending
-   */
+  
+
+
+
+
+
+
   async getAuditLogs(timeRange: string = '24h', limit: number = 100): Promise<AuditLog[]> {
     const logger = getLogger();
     try {
       const end = Date.now();
       const start = end - this.parseTimeRange(timeRange);
 
-      // LogQL query for auth events
+      
       const query = `{component="auth-audit"} | json | event_type=~"LOGIN.*|TOTP.*|INVITATION.*|USER.*|PERMISSION.*|BACKUP.*"`;
 
       logger.info('Fetching audit logs from Loki', { timeRange, limit });
@@ -84,7 +84,7 @@ export class SecurityDataService {
         limit
       });
 
-      // Parse Loki response into AuditLog format
+      
       const logs: AuditLog[] = [];
       if (data.data?.result) {
         for (const stream of data.data.result) {
@@ -118,11 +118,11 @@ export class SecurityDataService {
     }
   }
 
-  /**
-   * Get failed login count from Loki
-   *
-   * @returns Number of failed login attempts in the last 24 hours
-   */
+  
+
+
+
+
   async getFailedLogins24h(): Promise<number> {
     const logger = getLogger();
     try {
@@ -153,11 +153,11 @@ export class SecurityDataService {
     }
   }
 
-  /**
-   * Get successful login count from Loki
-   *
-   * @returns Number of successful logins in the last 24 hours
-   */
+  
+
+
+
+
   async getSuccessfulLogins24h(): Promise<number> {
     const logger = getLogger();
     try {
@@ -188,11 +188,11 @@ export class SecurityDataService {
     }
   }
 
-  /**
-   * Get session statistics from Prometheus
-   *
-   * @returns Session statistics including active sessions, recently expired, and average duration
-   */
+  
+
+
+
+
   async getSessionStats(): Promise<SessionStats> {
     const logger = getLogger();
     try {
@@ -216,7 +216,7 @@ export class SecurityDataService {
 
       const metrics = Object.fromEntries(results.map(r => [r.key, r.value]));
 
-      // Calculate recently expired sessions (last hour)
+      
       let recentlyExpired = 0;
       try {
         const expiredData = await this.prometheus.query('increase(session_expired_total[1h])');
@@ -226,7 +226,7 @@ export class SecurityDataService {
         logger.warn('Failed to fetch recently expired sessions', { error: err });
       }
 
-      // Calculate average session duration from histogram
+      
       let averageSessionDuration = 0;
       try {
         const [sumData, countData] = await Promise.all([
@@ -238,7 +238,7 @@ export class SecurityDataService {
         const count = countData.data?.result?.[0]?.value?.[1];
 
         if (sum && count && parseFloat(count) > 0) {
-          // Convert to minutes
+          
           averageSessionDuration = Math.floor((parseFloat(sum) / parseFloat(count)) / 60);
         }
       } catch (err) {
@@ -262,17 +262,17 @@ export class SecurityDataService {
     }
   }
 
-  /**
-   * Get critical events from Loki
-   *
-   * @param limit - Maximum number of events to return (default: 10)
-   * @returns Array of critical AuditLog entries
-   */
+  
+
+
+
+
+
   async getCriticalEvents(limit: number = 10): Promise<AuditLog[]> {
     const logger = getLogger();
     try {
       const end = Date.now();
-      const start = end - (7 * 24 * 60 * 60 * 1000); // Last 7 days
+      const start = end - (7 * 24 * 60 * 60 * 1000); 
 
       const query = `{component="auth-audit"} | json | severity="critical" or event_type=~"UNAUTHORIZED.*|SECURITY_VIOLATION|PERMISSION_DENIED"`;
 
@@ -314,11 +314,11 @@ export class SecurityDataService {
     }
   }
 
-  /**
-   * Get security metrics summary from Prometheus and Loki
-   *
-   * @returns Aggregated SecurityMetrics object
-   */
+  
+
+
+
+
   async getSecurityMetrics(): Promise<SecurityMetrics> {
     const logger = getLogger();
     try {
@@ -354,20 +354,20 @@ export class SecurityDataService {
     }
   }
 
-  /**
-   * Get recent fingerprint alerts (session hijacking detection)
-   * Includes enriched fingerprint data (IP, geo, VPN, browser, user stats)
-   *
-   * @param limit - Maximum number of alerts to return (default: 10)
-   * @returns Array of FingerprintAlert entries
-   */
+  
+
+
+
+
+
+
   async getRecentFingerprintAlerts(limit: number = 10): Promise<FingerprintAlert[]> {
     const logger = getLogger();
     try {
       const end = Date.now();
-      const start = end - (24 * 60 * 60 * 1000); // Last 24 hours
+      const start = end - (24 * 60 * 60 * 1000); 
 
-      // Query for session hijacking alerts AND enriched fingerprint logs
+      
       const query = `{job="stonewall-observability"} | json | alert_type="session_hijacking" or event_type="FINGERPRINT_MISMATCH" or event_type="fingerprint_mismatch" or component="fingerprint-enrichment"`;
 
       logger.info('Fetching fingerprint alerts from Loki', { limit });
@@ -385,10 +385,10 @@ export class SecurityDataService {
             try {
               const parsed = JSON.parse(logLine);
 
-              // Check if this is an enriched fingerprint log
+              
               const isEnriched = parsed.component === 'fingerprint-enrichment';
 
-              // Only process logs with session hijacking/mismatch events
+              
               const isAlert = parsed.alert_type === 'session_hijacking' ||
                              parsed.event_type === 'FINGERPRINT_MISMATCH' ||
                              parsed.event_type === 'fingerprint_mismatch' ||
@@ -457,17 +457,17 @@ export class SecurityDataService {
     }
   }
 
-  /**
-   * Get GeoIP anomalies (impossible travel detection from Loki)
-   *
-   * @param limit - Maximum number of anomalies to return (default: 10)
-   * @returns Array of GeoIPAnomaly entries
-   */
+  
+
+
+
+
+
   async getGeoIPAnomalies(limit: number = 10): Promise<GeoIPAnomaly[]> {
     const logger = getLogger();
     try {
       const end = Date.now();
-      const start = end - (24 * 60 * 60 * 1000); // Last 24 hours
+      const start = end - (24 * 60 * 60 * 1000); 
 
       const query = `{job="stonewall-observability"} | json | alert_type="impossible_travel" or event_type="GEOIP_ANOMALY"`;
 
@@ -511,12 +511,12 @@ export class SecurityDataService {
     }
   }
 
-  /**
-   * Parse time range string to milliseconds
-   */
+  
+
+
   private parseTimeRange(timeRange: string): number {
     const match = timeRange.match(/^(\d+)([smhd])$/);
-    if (!match) return 24 * 60 * 60 * 1000; // Default to 24h
+    if (!match) return 24 * 60 * 60 * 1000; 
 
     const [, value, unit] = match;
     const num = parseInt(value!, 10);
@@ -530,9 +530,9 @@ export class SecurityDataService {
     }
   }
 
-  /**
-   * Map log level to severity
-   */
+  
+
+
   private mapSeverity(level: string): 'info' | 'warning' | 'critical' {
     const lowercaseLevel = level.toLowerCase();
     if (lowercaseLevel.includes('error') || lowercaseLevel.includes('critical')) {
@@ -544,9 +544,9 @@ export class SecurityDataService {
     return 'info';
   }
 
-  /**
-   * Map risk level string to standard values
-   */
+  
+
+
   private mapRiskLevel(level?: string): 'low' | 'medium' | 'high' {
     if (!level) return 'medium';
     const lowercaseLevel = level.toLowerCase();
