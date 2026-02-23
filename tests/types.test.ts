@@ -1,12 +1,12 @@
-/**
- * Type definition tests for tinyland-threat-detection
- *
- * Validates that exported types are structurally correct and
- * can be used in type-safe code.
- */
+
+
+
+
+
+
 import { describe, it, expect } from 'vitest';
 import type {
-  // Backend types
+  
   LokiStream,
   LokiQueryResult,
   PrometheusMetricResult,
@@ -14,10 +14,10 @@ import type {
   TempoSearchResult,
   TempoTrace,
 
-  // Fingerprint types
+  
   FingerprintRecord,
 
-  // Threat correlation types
+  
   VPNChange,
   VPNSwitcher,
   IPChange,
@@ -28,7 +28,7 @@ import type {
   FingerprintTimeline,
   AttackCorrelation,
 
-  // Security data types
+  
   AuditLog,
   SessionStats,
   SecurityMetrics,

@@ -1,15 +1,15 @@
-/**
- * Tests for ThreatCorrelationService
- */
+
+
+
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ThreatCorrelationService } from '../src/ThreatCorrelationService.js';
 import { resetThreatDetectionConfig, configureThreatDetection } from '../src/config.js';
 import type { FingerprintQueryBackend } from '../src/config.js';
 import type { FingerprintRecord } from '../src/types.js';
 
-// ============================================================================
-// Test Helpers
-// ============================================================================
+
+
+
 
 function createRecord(overrides: Partial<FingerprintRecord> = {}): FingerprintRecord {
   return {
@@ -37,9 +37,9 @@ function minutesAgo(minutes: number): string {
   return new Date(Date.now() - minutes * 60 * 1000).toISOString();
 }
 
-// ============================================================================
-// VPN Switching Detection Tests
-// ============================================================================
+
+
+
 
 describe('ThreatCorrelationService', () => {
   beforeEach(() => {
@@ -109,7 +109,7 @@ describe('ThreatCorrelationService', () => {
       const backend = createMockBackend(records);
       const service = new ThreatCorrelationService(backend);
 
-      // minChanges=3 should only match fp-2 (3 changes)
+      
       const result = await service.detectVPNSwitchers('7d', 3);
       expect(result).toHaveLength(1);
       expect(result[0].fingerprintId).toBe('fp-2');
@@ -125,8 +125,8 @@ describe('ThreatCorrelationService', () => {
 
       const result = await service.detectVPNSwitchers('7d', 1);
       expect(result).toHaveLength(1);
-      // Base: 30 + 1 change * 10 = 40
-      // VPN last change was 46h ago, not within 24h, so no +30 bonus
+      
+      
       expect(result[0].riskScore).toBe(40);
     });
 
@@ -140,7 +140,7 @@ describe('ThreatCorrelationService', () => {
 
       const result = await service.detectVPNSwitchers('7d', 1);
       expect(result).toHaveLength(1);
-      // Base: 30 + 1*10 = 40, + 30 (VPN in last 24h) = 70
+      
       expect(result[0].riskScore).toBe(70);
     });
 
@@ -162,10 +162,10 @@ describe('ThreatCorrelationService', () => {
 
     it('should sort results by risk score descending', async () => {
       const records = [
-        // fp-1: 1 change, no recent VPN = score 40
+        
         createRecord({ fingerprintId: 'fp-1', timestamp: hoursAgo(48), vpnDetected: false, ipHash: 'ip1' }),
         createRecord({ fingerprintId: 'fp-1', timestamp: hoursAgo(46), vpnDetected: true, ipHash: 'ip2' }),
-        // fp-2: 1 change, recent VPN = score 70
+        
         createRecord({ fingerprintId: 'fp-2', timestamp: hoursAgo(5), vpnDetected: false, ipHash: 'ip3' }),
         createRecord({ fingerprintId: 'fp-2', timestamp: minutesAgo(30), vpnDetected: true, ipHash: 'ip4' }),
       ];
@@ -174,8 +174,8 @@ describe('ThreatCorrelationService', () => {
 
       const result = await service.detectVPNSwitchers('7d', 1);
       expect(result).toHaveLength(2);
-      expect(result[0].fingerprintId).toBe('fp-2'); // Higher risk
-      expect(result[1].fingerprintId).toBe('fp-1'); // Lower risk
+      expect(result[0].fingerprintId).toBe('fp-2'); 
+      expect(result[1].fingerprintId).toBe('fp-1'); 
     });
 
     it('should detect suspicious activity description for recent VPN', async () => {
@@ -229,13 +229,13 @@ describe('ThreatCorrelationService', () => {
 
     it('should handle multiple fingerprints independently', async () => {
       const records = [
-        // fp-1: switches VPN
+        
         createRecord({ fingerprintId: 'fp-1', timestamp: hoursAgo(5), vpnDetected: false, ipHash: 'ip1' }),
         createRecord({ fingerprintId: 'fp-1', timestamp: hoursAgo(3), vpnDetected: true, ipHash: 'ip2' }),
-        // fp-2: no switches
+        
         createRecord({ fingerprintId: 'fp-2', timestamp: hoursAgo(5), vpnDetected: false, ipHash: 'ip3' }),
         createRecord({ fingerprintId: 'fp-2', timestamp: hoursAgo(3), vpnDetected: false, ipHash: 'ip4' }),
-        // fp-3: switches VPN
+        
         createRecord({ fingerprintId: 'fp-3', timestamp: hoursAgo(5), vpnDetected: true, ipHash: 'ip5' }),
         createRecord({ fingerprintId: 'fp-3', timestamp: hoursAgo(3), vpnDetected: false, ipHash: 'ip6' }),
       ];
@@ -251,9 +251,9 @@ describe('ThreatCorrelationService', () => {
     });
   });
 
-  // ============================================================================
-  // IP Rotation Detection Tests
-  // ============================================================================
+  
+  
+  
 
   describe('detectIPRotation', () => {
     it('should return empty array when no records exist', async () => {
@@ -302,7 +302,7 @@ describe('ThreatCorrelationService', () => {
 
       const result = await service.detectIPRotation('7d', 3);
       expect(result).toHaveLength(1);
-      // Over 7d window (168h > 24h), 3 IPs = low
+      
       expect(result[0].suspicionLevel).toBe('low');
     });
 
@@ -383,7 +383,7 @@ describe('ThreatCorrelationService', () => {
 
       const result = await service.detectIPRotation('24h', 3);
       expect(result).toHaveLength(1);
-      // 3 changes with hash changes, avg ~1200s between = 20 minutes
+      
       expect(result[0].avgTimeBetweenChanges).toBeGreaterThan(0);
     });
 
@@ -399,9 +399,9 @@ describe('ThreatCorrelationService', () => {
         );
 
       const records = [
-        ...makeRecords('fp-low', 4),    // low/medium
-        ...makeRecords('fp-high', 10),   // high
-        ...makeRecords('fp-crit', 16),   // critical
+        ...makeRecords('fp-low', 4),    
+        ...makeRecords('fp-high', 10),   
+        ...makeRecords('fp-crit', 16),   
       ];
       const backend = createMockBackend(records);
       const service = new ThreatCorrelationService(backend);
@@ -422,9 +422,9 @@ describe('ThreatCorrelationService', () => {
     });
   });
 
-  // ============================================================================
-  // Impossible Travel Detection Tests
-  // ============================================================================
+  
+  
+  
 
   describe('detectImpossibleTravel', () => {
     it('should return empty array when no records exist', async () => {
@@ -452,7 +452,7 @@ describe('ThreatCorrelationService', () => {
       const records = [
         createRecord({
           fingerprintId: 'fp-1',
-          timestamp: new Date(now - 30 * 60 * 1000).toISOString(), // 30 min ago
+          timestamp: new Date(now - 30 * 60 * 1000).toISOString(), 
           geoLatitude: 40.7128,
           geoLongitude: -74.006,
           geoCity: 'New York',
@@ -460,7 +460,7 @@ describe('ThreatCorrelationService', () => {
         }),
         createRecord({
           fingerprintId: 'fp-1',
-          timestamp: new Date(now).toISOString(), // now
+          timestamp: new Date(now).toISOString(), 
           geoLatitude: 35.6762,
           geoLongitude: 139.6503,
           geoCity: 'Tokyo',
@@ -485,7 +485,7 @@ describe('ThreatCorrelationService', () => {
       const records = [
         createRecord({
           fingerprintId: 'fp-1',
-          timestamp: new Date(now - 8 * 60 * 60 * 1000).toISOString(), // 8 hours ago
+          timestamp: new Date(now - 8 * 60 * 60 * 1000).toISOString(), 
           geoLatitude: 40.7128,
           geoLongitude: -74.006,
           geoCity: 'New York',
@@ -493,7 +493,7 @@ describe('ThreatCorrelationService', () => {
         }),
         createRecord({
           fingerprintId: 'fp-1',
-          timestamp: new Date(now).toISOString(), // now
+          timestamp: new Date(now).toISOString(), 
           geoLatitude: 51.5074,
           geoLongitude: -0.1278,
           geoCity: 'London',
@@ -503,7 +503,7 @@ describe('ThreatCorrelationService', () => {
       const backend = createMockBackend(records);
       const service = new ThreatCorrelationService(backend);
 
-      // NYC to London is ~5500km, 8 hours = ~688 km/h (under 900)
+      
       const result = await service.detectImpossibleTravel(undefined, 900);
       expect(result).toHaveLength(0);
     });
@@ -530,7 +530,7 @@ describe('ThreatCorrelationService', () => {
       const result = await service.detectImpossibleTravel('fp-target', 900);
       expect(result).toHaveLength(1);
 
-      // Verify backend was called with fingerprint filter
+      
       expect(backend.queryFingerprints).toHaveBeenCalledWith(
         '7d',
         { 'fingerprint.id': 'fp-target' }
@@ -540,7 +540,7 @@ describe('ThreatCorrelationService', () => {
     it('should sort by impossibility factor descending', async () => {
       const now = Date.now();
       const records = [
-        // fp-1: NYC to London in 1 minute (~330,000 km/h)
+        
         createRecord({
           fingerprintId: 'fp-1',
           timestamp: new Date(now - 60 * 1000).toISOString(),
@@ -551,7 +551,7 @@ describe('ThreatCorrelationService', () => {
           timestamp: new Date(now).toISOString(),
           geoLatitude: 51.5074, geoLongitude: -0.1278,
         }),
-        // fp-2: NYC to Tokyo in 1 minute (even further)
+        
         createRecord({
           fingerprintId: 'fp-2',
           timestamp: new Date(now - 60 * 1000).toISOString(),
@@ -568,7 +568,7 @@ describe('ThreatCorrelationService', () => {
 
       const result = await service.detectImpossibleTravel(undefined, 900);
       expect(result.length).toBeGreaterThanOrEqual(2);
-      // Tokyo (farther) should have higher impossibility factor
+      
       expect(result[0].impossibilityFactor).toBeGreaterThanOrEqual(result[1].impossibilityFactor);
     });
 
@@ -591,7 +591,7 @@ describe('ThreatCorrelationService', () => {
       const service = new ThreatCorrelationService(backend);
 
       const result = await service.detectImpossibleTravel();
-      // NaN records are filtered out, so only 1 valid location = no pair to compare
+      
       expect(result).toHaveLength(0);
     });
 
@@ -628,11 +628,11 @@ describe('ThreatCorrelationService', () => {
       const backend = createMockBackend(records);
       const service = new ThreatCorrelationService(backend);
 
-      // At 900 km/h max, NYC->London in 8h is fine (~688 km/h)
+      
       const result900 = await service.detectImpossibleTravel(undefined, 900);
       expect(result900).toHaveLength(0);
 
-      // At 500 km/h max, same trip would be impossible
+      
       const result500 = await service.detectImpossibleTravel(undefined, 500);
       expect(result500).toHaveLength(1);
     });
@@ -647,9 +647,9 @@ describe('ThreatCorrelationService', () => {
     });
   });
 
-  // ============================================================================
-  // Fingerprint Timeline Tests
-  // ============================================================================
+  
+  
+  
 
   describe('getFingerprintTimeline', () => {
     it('should return empty timeline when no records found', async () => {
@@ -756,7 +756,7 @@ describe('ThreatCorrelationService', () => {
 
       await service.getFingerprintTimeline('fp-1', '30d');
 
-      // Should be called with '7d' (clamped from '30d')
+      
       expect(backend.queryFingerprints).toHaveBeenCalledWith(
         '7d',
         { 'fingerprint.id': 'fp-1' }
@@ -818,9 +818,9 @@ describe('ThreatCorrelationService', () => {
     });
   });
 
-  // ============================================================================
-  // Time Window Parsing Tests
-  // ============================================================================
+  
+  
+  
 
   describe('parseTimeWindow', () => {
     it('should parse seconds', () => {

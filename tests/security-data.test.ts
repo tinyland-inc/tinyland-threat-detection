@@ -1,15 +1,15 @@
-/**
- * Tests for SecurityDataService
- */
+
+
+
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SecurityDataService } from '../src/SecurityDataService.js';
 import { resetThreatDetectionConfig, configureThreatDetection } from '../src/config.js';
 import type { LokiBackend, PrometheusBackend } from '../src/config.js';
 import type { LokiQueryResult, PrometheusQueryResult } from '../src/types.js';
 
-// ============================================================================
-// Test Helpers
-// ============================================================================
+
+
+
 
 function createEmptyLokiResult(): LokiQueryResult {
   return {
@@ -40,7 +40,7 @@ function createLokiResult(logEntries: Array<{ timestamp: number; data: Record<st
         {
           stream: { component: 'auth-audit' },
           values: logEntries.map(entry => [
-            String(entry.timestamp * 1000000), // Loki uses nanosecond timestamps
+            String(entry.timestamp * 1000000), 
             JSON.stringify(entry.data),
           ]),
         },
@@ -77,18 +77,18 @@ function createMockPrometheus(defaultResult?: PrometheusQueryResult): Prometheus
   };
 }
 
-// ============================================================================
-// Tests
-// ============================================================================
+
+
+
 
 describe('SecurityDataService', () => {
   beforeEach(() => {
     resetThreatDetectionConfig();
   });
 
-  // ============================================================================
-  // Audit Logs
-  // ============================================================================
+  
+  
+  
 
   describe('getAuditLogs', () => {
     it('should return empty array when no logs exist', async () => {
@@ -200,15 +200,15 @@ describe('SecurityDataService', () => {
       const service = new SecurityDataService(loki, createMockPrometheus());
 
       const result = await service.getAuditLogs('24h');
-      // Should skip malformed and keep valid
+      
       expect(result).toHaveLength(1);
       expect(result[0].eventType).toBe('VALID');
     });
   });
 
-  // ============================================================================
-  // Failed Logins
-  // ============================================================================
+  
+  
+  
 
   describe('getFailedLogins24h', () => {
     it('should return 0 when no failed logins', async () => {
@@ -253,9 +253,9 @@ describe('SecurityDataService', () => {
     });
   });
 
-  // ============================================================================
-  // Successful Logins
-  // ============================================================================
+  
+  
+  
 
   describe('getSuccessfulLogins24h', () => {
     it('should return 0 when no successful logins', async () => {
@@ -288,9 +288,9 @@ describe('SecurityDataService', () => {
     });
   });
 
-  // ============================================================================
-  // Session Stats
-  // ============================================================================
+  
+  
+  
 
   describe('getSessionStats', () => {
     it('should return zero stats when Prometheus has no data', async () => {
@@ -322,10 +322,10 @@ describe('SecurityDataService', () => {
       const prometheus: PrometheusBackend = {
         query: vi.fn().mockImplementation((promql: string) => {
           if (promql === 'session_duration_seconds_sum') {
-            return Promise.resolve(createPrometheusResult(36000)); // 36000 seconds
+            return Promise.resolve(createPrometheusResult(36000)); 
           }
           if (promql === 'session_duration_seconds_count') {
-            return Promise.resolve(createPrometheusResult(10)); // 10 sessions
+            return Promise.resolve(createPrometheusResult(10)); 
           }
           return Promise.resolve(createEmptyPrometheusResult());
         }),
@@ -334,7 +334,7 @@ describe('SecurityDataService', () => {
       const service = new SecurityDataService(createMockLoki(), prometheus);
 
       const result = await service.getSessionStats();
-      // 36000s / 10 = 3600s / 60 = 60 minutes
+      
       expect(result.averageSessionDuration).toBe(60);
     });
 
@@ -352,9 +352,9 @@ describe('SecurityDataService', () => {
     });
   });
 
-  // ============================================================================
-  // Critical Events
-  // ============================================================================
+  
+  
+  
 
   describe('getCriticalEvents', () => {
     it('should return empty array when no critical events', async () => {
@@ -404,9 +404,9 @@ describe('SecurityDataService', () => {
     });
   });
 
-  // ============================================================================
-  // Security Metrics
-  // ============================================================================
+  
+  
+  
 
   describe('getSecurityMetrics', () => {
     it('should aggregate metrics from multiple sources', async () => {
@@ -422,18 +422,18 @@ describe('SecurityDataService', () => {
           ],
         },
       };
-      // The failed logins query and successful logins query share the same mock
+      
       const loki: LokiBackend = {
         query: vi.fn()
-          .mockResolvedValueOnce(lokiResult) // failedLogins
-          .mockResolvedValueOnce(lokiResult), // successfulLogins
+          .mockResolvedValueOnce(lokiResult) 
+          .mockResolvedValueOnce(lokiResult), 
       };
       const service = new SecurityDataService(loki, createMockPrometheus());
 
       const result = await service.getSecurityMetrics();
       expect(result.failedLogins24h).toBe(5);
       expect(result.successfulLogins24h).toBe(5);
-      expect(result.totalUsers).toBe(0); // Not yet implemented
+      expect(result.totalUsers).toBe(0); 
     });
 
     it('should return zeroed metrics on error', async () => {
@@ -449,9 +449,9 @@ describe('SecurityDataService', () => {
     });
   });
 
-  // ============================================================================
-  // Fingerprint Alerts
-  // ============================================================================
+  
+  
+  
 
   describe('getRecentFingerprintAlerts', () => {
     it('should return empty array when no alerts exist', async () => {
@@ -565,9 +565,9 @@ describe('SecurityDataService', () => {
     });
   });
 
-  // ============================================================================
-  // GeoIP Anomalies
-  // ============================================================================
+  
+  
+  
 
   describe('getGeoIPAnomalies', () => {
     it('should return empty array when no anomalies exist', async () => {
@@ -625,7 +625,7 @@ describe('SecurityDataService', () => {
 
       const result = await service.getGeoIPAnomalies();
       expect(result).toHaveLength(3);
-      expect(result[0].riskLevel).toBe('high'); // critical maps to high
+      expect(result[0].riskLevel).toBe('high'); 
       expect(result[1].riskLevel).toBe('medium');
       expect(result[2].riskLevel).toBe('low');
     });
