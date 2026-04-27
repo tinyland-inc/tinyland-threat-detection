@@ -1,6 +1,6 @@
 {
   "name": "@tummycrypt/tinyland-threat-detection",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Threat correlation, security data querying, VPN switching detection, IP rotation analysis, and impossible travel detection",
   "type": "module",
   "license": "Zlib AND LicenseRef-Tinyland-Proprietary",
@@ -25,7 +25,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest --coverage",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm build && pnpm check:package",
+    "check:package": "publint"
   },
   "keywords": [
     "threat-detection",
@@ -42,21 +43,25 @@
   "author": "Tinyland.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tinyland-inc/tinyland.dev",
-    "directory": "packages/tinyland-threat-detection"
+    "url": "git+https://github.com/tinyland-inc/tinyland-threat-detection.git"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.0.0",
-    "vitest": "^4.0.0"
+    "vitest": "^4.0.0",
+    "publint": "^0.3.18"
   },
   "engines": {
     "node": ">=22.0.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
-    "access": "public",
-    "provenance": true
+    "access": "public"
+  },
+  "packageManager": "pnpm@10.13.1",
+  "homepage": "https://github.com/tinyland-inc/tinyland-threat-detection",
+  "bugs": {
+    "url": "https://github.com/tinyland-inc/tinyland-threat-detection/issues"
   }
 }
